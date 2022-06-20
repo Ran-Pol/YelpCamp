@@ -1,6 +1,20 @@
 const express = require('express');
-const app = express();
 const path = require('path');
+const mongoose = require("mongoose");
+// Getting the model that we create from the origional Schema 
+const Campground = require("./models/campground")
+
+mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log("MONGO CONNECTION OPEN!!!")
+    })
+    .catch(err => {
+        console.log("OH NO MONGO CONNECTION ERROR!!!!")
+        console.log(err)
+    })
+
+const app = express();
+
 
 
 
@@ -17,12 +31,16 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-
-
-
-
-
-
+app.get('/makecampground', async (req, res) => {
+    const camp = new Campground({
+        title: 'My Backyard',
+        price: '500',
+        description: 'Top of the line at an affordable price',
+        location: "DR"
+    })
+    await camp.save();
+    res.send(camp);
+})
 
 
 app.listen(3000, () => {
