@@ -29,7 +29,7 @@ app.set("view engine", "ejs");
 // use the express.static built-in middleware function in Express.
 // app.use(express.static('public'))
 app.use(express.static(path.join(__dirname, 'public')))
-//Express.urlencoded allows us to read the body data
+//Express.urlencoded allows us to read the body data/ parses the data
 app.use(express.urlencoded({ extended: true }));
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
@@ -64,7 +64,8 @@ app.get('/campgrounds/new', (req, res) => {
 app.post('/campgrounds', async (req, res) => {
     const { title, price, city, state, description } = req.body;
     const newCamp = await addNewCamp(title, price, city, state, description);
-    res.redirect('/campgrounds');
+    res.redirect(`/campgrounds/${newCamp._id}`);
+
 })
 
 ////////CRUD: => SHOW     
@@ -75,7 +76,7 @@ app.post('/campgrounds', async (req, res) => {
 app.get('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
-    res.render('campgrounds/show', { camp, })
+    res.render('campgrounds/show', { camp })
 })
 
 
