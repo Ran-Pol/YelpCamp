@@ -9,7 +9,20 @@
 </head>
 
 <body>
-    <h1>We are starting this party</h1>
+    <h1>All Camps Available</h1>
+    <ol>
+        <%for (camp of camps) {%>
+            <li> <b>
+                    <%=camp.title%>:
+                </b>
+                $<%=camp.price%>
+            </li>
+
+            <% } %>
+    </ol>
+
+
+
 </body>
 
 </html>

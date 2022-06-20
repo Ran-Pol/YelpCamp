@@ -27,8 +27,9 @@ app.set("view engine", "ejs");
 
 
 
-app.get('/', (req, res) => {
-    res.render('home')
+app.get('/', async (req, res) => {
+    const camps = await Campground.find({})
+    res.render('home', { camps })
 })
 
 app.get('/makecampground', async (req, res) => {
