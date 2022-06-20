@@ -88,7 +88,7 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
     res.render('campgrounds/edit', { camp, stateList })
-})
+});
 
 
 ////////CRUD: => UPDATE  
@@ -97,8 +97,19 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
 app.put('/campgrounds/:id', async (req, res) => {
-    const camp = await Campground.findByIdAndUpdate();
-})
+    const { id } = req.params;
+    const { title, price, city, state, description } = req.body;
+    // const camp1 = await Campground.findById(id);
+    // console.log(camp1)
+    const camp = await Campground.findByIdAndUpdate(id, {
+        title: title,
+        price: price,
+        description: description,
+        location: `${city}, ${state}`
+    }, { new: true })
+    // console.log(camp)
+    res.redirect('/campgrounds');
+});
 
 
 ////////CRUD: => DELETE
@@ -106,8 +117,12 @@ app.put('/campgrounds/:id', async (req, res) => {
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-app.delete('campgrounds/:id', async (req, res) => {
+app.delete('/campgrounds/:id', async (req, res) => {
+    const { id } = req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect('/campgrounds');
 })
+
 
 
 

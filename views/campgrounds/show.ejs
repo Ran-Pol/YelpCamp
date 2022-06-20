@@ -12,10 +12,10 @@
 </head>
 
 <body>
-    <h1>
-        <%= camp.title %>
+    <h1 class="title">
+        <%= camp.title %> <a href=<%=`/campgrounds/${camp._id}/edit`%> class="button is-small">edit</a>
     </h1>
-    <a href=<%=`/campgrounds/${camp._id}/edit`%> class="button is-small">edit</a>
+
     <h3>Price:</h3>
     <p>
         <%= camp.price %>
@@ -29,6 +29,7 @@
     <p>
         <%= camp.description %>
     </p>
+
 </body>
 
 </html>
