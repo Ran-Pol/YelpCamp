@@ -38,6 +38,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 
+////////Homepage 
+app.get('/', (req, res) => {
+    res.render('home');
+
+})
 ////////CRUD: => INDEX    
 // ////API ENDPOINT: =>  /products
 ////////HTTP VERB: => GET

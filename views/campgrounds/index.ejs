@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<% layout('layouts/boilerplate.ejs') %>
+    <h1 class="">All CampGrounds Availables</h1>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>Campgrounds</title>
-</head>
-
-<body>
-    <h1 class="title">All CampGrounds Availables</h1>
-
-    <div class="field is-grouped ">
-        <a class="button is-link" href='/campgrounds/new'>Create New Camp</a>
+    <div class="">
+        <a class="" href='/campgrounds/new'>Create New Camp</a>
     </div>
     <ul>
         <% for (camp of camps) { %>
@@ -22,6 +11,3 @@
             </li>
             <% }%>
     </ul>
-</body>
-
-</html>

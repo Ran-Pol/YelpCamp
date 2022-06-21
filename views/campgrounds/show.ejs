@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>
-        <%= camp.title %>
-    </title>
-</head>
-
-<body>
-    <h1 class="title">
-        <%= camp.title %> <a href=<%=`/campgrounds/${camp._id}/edit`%> class="button is-small">edit</a>
+<% layout('layouts/boilerplate.ejs') %>
+    <h1 class="">
+        <%= camp.title %> <a href=<%=`/campgrounds/${camp._id}/edit`%> class="">edit</a>
     </h1>
 
     <h3>Price:</h3>
@@ -29,7 +16,3 @@
     <p>
         <%= camp.description %>
     </p>
-
-</body>
-
-</html>

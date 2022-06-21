@@ -1,47 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>New CampGround</title>
-</head>
-
-<body>
-    <h1 class="title">Edit: <%= camp.title %>
+<% layout('layouts/boilerplate.ejs') %>
+    <h1 class="">Edit: <%= camp.title %>
     </h1>
 
 
     <form action="/campgrounds/<%=camp._id%>?_method=put" method="post">
-        <div class="field">
-            <label for="title" class="label">Camp Name</label>
-            <div class="control">
-                <input class="input" type="text" name="title" placeholder="Enter canp's name" id="title"
+        <div class="">
+            <label for="title" class="">Camp Name</label>
+            <div class="">
+                <input class="" type="text" name="title" placeholder="Enter canp's name" id="title"
                     value="<%= camp.title %> ">
             </div>
         </div>
-        <div class="field">
-            <label for="price" class="label">Price</label>
-            <div class="control">
-                <input class="input" placeholder="Enter price" type="number" name="price" id="price" min="0" step="0.01"
+        <div>
+            <label for="price">Price</label>
+            <div>
+                <input placeholder="Enter price" type="number" name="price" id="price" min="0" step="0.01"
                     value="<%=camp.price%>">
             </div>
         </div>
 
-        <div class=" field">
-            <label for="city" class="label">City</label>
-            <div class="control">
-                <input class="input" type="text" name="city" placeholder="Enter city" id="city"
+        <div class="">
+            <label for="city">City</label>
+            <div>
+                <input type="text" name="city" placeholder="Enter city" id="city"
                     value="<%=camp.location.split(',')[0]%>">
             </div>
         </div>
 
-        <div class="field">
-            <label for="state" class="label">State</label>
-            <div class="control">
-                <div class="select">
+        <div>
+            <label for="state">State</label>
+            <div>
+                <div>
                     <select id="state" name="state">
                         <option>Select State</option>
                         <%for (const state in stateList) {%>
@@ -55,29 +44,26 @@
             </div>
         </div>
 
-        <div class="field">
-            <label for="description" class="label">Description</label>
-            <div class="control">
-                <textarea name="description" id="description" class="textarea"
+        <div >
+            <label for="description" >Description</label>
+            <div  class="">
+                <textarea name="description" id="description" 
                     placeholder="Describe the camp..." ><%=camp.description%></textarea>
             </div>
         </div>
 
 
-        <div class="field is-grouped ">
-            <div class="control">
-                <button type="submit" class="button is-link">Submit</button>
+        <div >
+            <div >
+                <button type="submit" >Submit</button>
             </div>
       
-        <div class="control">
-            <a class="button" href="/campgrounds">Go Back</a>
+        <div >
+            <a  href="/campgrounds">Go Back</a>
         </div>
         </div>
     </form>
     <hr>
-    <form action=<%=`/campgrounds/${camp._id}?_method=delete`%> method="post"><div class="control"><button
-        class="button is-danger">Delete Camp</button></div>
+    <form action=<%=`/campgrounds/${camp._id}?_method=delete`%> method="post"><div ><button
+        >Delete Camp</button></div>
 </form>
-</body>
-
-</html>
