@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require("mongoose");
+const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
@@ -19,10 +20,12 @@ const app = express();
 
 
 
-
 // Here we are setting the path to our views folder. Here we are going to create the files/codes 
 // that are needed to Dynamicaly create pages to later render
 app.set("views", path.join(__dirname, "views"));
+// Design Engine to Run/Parse EJS. We are telling express that 
+// We want to use this one ejs-mate insted of the default.
+app.engine('ejs', ejsMate);
 //  EJS is a simple templating language that lets you generate HTML markup with plain JavaScript. 
 app.set("view engine", "ejs");
 // To serve static files such as images, CSS files, and JavaScript files, 
