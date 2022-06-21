@@ -19,11 +19,10 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true,
 const app = express();
 
 
-
 // Here we are setting the path to our views folder. Here we are going to create the files/codes 
 // that are needed to Dynamicaly create pages to later render
 app.set("views", path.join(__dirname, "views"));
-//  EJS is a simple templating language that lets you generate HTML markup with plain JavaScript. 
+//  EJS is a simple templating language that lets you  generate HTML markup with plain JavaScript. 
 app.set("view engine", "ejs");
 // To serve static files such as images, CSS files, and JavaScript files, 
 // use the express.static built-in middleware function in Express.
@@ -34,7 +33,41 @@ app.use(express.urlencoded({ extended: true }));
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
 // Testing Morgan middleware...Usually is use for debugging
-app.use(morgan('tiny'));
+
+// Creatig Our Personal Middleware that will run on all incoming requests/ all http verbs
+// app.use((req, res, next) => {
+//     req.requesTime = Date.now();
+//     console.log(req.method.toUpperCase(), req.path, req.params, req.requesTime)
+//     next()
+// })
+// app.use((req, res, next) => {
+//     const { password } = req.query;
+//     if (password === 'chickennugget') {
+//         return next();
+//     }
+//     res.send("YOU NEED A PASSWORD!")
+
+// })
+
+// WE can acomplish the same thing as the above midleware like this:
+const verifyPassword = (req, res, next) => {
+    const { password } = req.query;
+    if (password === 'chickennugget') {
+        return next();
+    }
+    res.send("YOU NEED A PASSWORD!")
+};
+
+
+
+// Creatig Our Personal Middleware that will run on a particular incoming request path
+app.use('/campgrounds/new', (req, res, next) => {
+    req.requesTime = Date.now();
+    console.log(req.method.toUpperCase(), req.path, req.params, req.requesTime)
+    console.log("I Love DOGS!")
+    next()
+})
+
 
 ////////CRUD: => INDEX    
 // ////API ENDPOINT: =>  /products
@@ -125,7 +158,15 @@ app.delete('/campgrounds/:id', async (req, res) => {
     res.redirect('/campgrounds');
 })
 
+app.get('/secret', verifyPassword, (req, res) => {
+    res.send("I'm working on this program 24/7. Lets see what happens 3 months from now.")
+})
 
+// We can use this Middleware at the end of all routes 
+// incase the page/the requeest was not found
+app.use((req, res) => {
+    res.send("Page not found")
+})
 
 
 app.listen(3000, () => {
