@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require("mongoose");
 const methodOverride = require('method-override')
+const morgan = require('morgan')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
 const stateList = require("./seeds/stateList")
@@ -19,7 +20,6 @@ const app = express();
 
 
 
-
 // Here we are setting the path to our views folder. Here we are going to create the files/codes 
 // that are needed to Dynamicaly create pages to later render
 app.set("views", path.join(__dirname, "views"));
@@ -33,7 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }));
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
-
+// Testing Morgan middleware...Usually is use for debugging
+app.use(morgan('tiny'));
 
 ////////CRUD: => INDEX    
 // ////API ENDPOINT: =>  /products
