@@ -1,19 +1,40 @@
 <% layout('layouts/boilerplate.ejs') %>
-    <h1 class="">
-        <%= camp.title %> <a href=<%=`/campgrounds/${camp._id}/edit`%> class="">edit</a>
-    </h1>
-    <img src=" <%= camp.image %>">
 
-    <h3>Price:</h3>
-    <p>
-        <%= camp.price %>
-    </p>
-    <h3>Location:</h3>
-    <p>
-        <%= camp.location %>
-    </p>
-    <h3>Description:%>
-    </h3>
-    <p>
-        <%= camp.description %>
-    </p>
+    <div class="row">
+        <div class="col-6 offset-3">
+            <div class="card mb-3">
+                <img src=" <%= camp.image %>" alt="" class="card-img-top">
+
+                <div class="card-body">
+                    <div class="row">
+                        <h3 class="card-title col-6 ">
+                            <%= camp.title %>
+                        </h3>
+                        <h4 class="card-title col-6 ">
+                            $<%= camp.price %>/night
+
+                        </h4>
+                    </div>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <%= camp.location %>
+                        </small>
+                    </p>
+                    <p class="card-text">
+
+                        <%= camp.description %>
+
+                    </p>
+                    <p class="card-text">
+                        <a class="btn btn-primary" href=<%=`/campgrounds/${camp._id}/edit`%>
+                            >edit</a>
+
+                    </p>
+
+                </div>
+
+                <div class="card-footer">2 dyas ago</div>
+
+            </div>
+        </div>
+    </div>

@@ -12,10 +12,13 @@ img {
 
 
 .formBottomButton {
-
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-bottom: 50px;
+
 }
 
 .formButton {
-    margin-right: 30px;
+    margin-right: 20px;
 }

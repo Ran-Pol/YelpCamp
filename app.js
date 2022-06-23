@@ -70,8 +70,8 @@ app.get('/campgrounds/new', (req, res) => {
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
 app.post('/campgrounds', async (req, res) => {
-    const { title, price, city, state, description } = req.body;
-    const newCamp = await addNewCamp(title, price, city, state, description);
+    const { title, price, city, state, description, image } = req.body;
+    const newCamp = await addNewCamp(title, price, city, state, description, image);
     res.redirect(`/campgrounds/${newCamp._id}`);
 
 })
@@ -142,12 +142,13 @@ app.listen(3000, () => {
 
 
 
-function addNewCamp(title, price, city, state, description) {
+function addNewCamp(title, price, city, state, description, image) {
     const newCamp = new Campground({
         title: title,
         price: price,
         description: description,
-        location: `${city}, ${state}`
+        location: `${city}, ${state}`,
+        image: image,
     })
 
     newCamp.save()
