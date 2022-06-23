@@ -67,3 +67,59 @@
     <form action=<%=`/campgrounds/${camp._id}?_method=delete`%> method="post"><div ><button
         >Delete Camp</button></div>
 </form>
+
+
+<div class="row">
+    <!-- Title of the page -->
+    <h1 class="text-center"><%= camp.title %>: edit</h1>
+
+    <div class="col-6 offset-3">
+        <form action="/campgrounds" method="post">
+            <!-- Camp' s Name -->
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Camp name</label>
+                                    <input type="text" name="title" class="form-control" id="title"
+                                        placeholder="Enter name" value="<%= camp.title %> ">
+
+                                </div>
+                                <!-- Camp's Price -->
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Price</label>
+                                    <input type="number" name="price" class="form-control" id="price"
+                                        placeholder="Enter amount" value="<%=camp.price%>">
+                                </div>
+                                <!-- Camp's City -->
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" name="city" class="form-control" id="city"
+                                        placeholder="Enter city">
+                                </div>
+                                <!-- Camp's State -->
+                                <div class="mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <select class="form-select" id="state" name="state"
+                                        aria-label="Default select example">
+                                        <option selected>Select state</option>
+                                        <%for (const state in stateList) {%>
+                                            <option value="<%=stateList[state]%>">
+                                                <%=stateList[state]%>
+                                            </option>
+                                            <%} %>
+                                    </select>
+                                </div>
+                                <!-- Camp's Description -->
+                                <div class="mb-3 form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here" id="description"
+                                        style="height: 100px"></textarea>
+                                    <label for="description" class="form-label">Camp description...</label>
+                                </div>
+                                <!-- Submit Button -->
+                                <div class="formBottomButton">
+                                    <button type="submit" class="btn btn-primary formButton">Submit</button>
+                                    <button type="reset" class="btn btn-danger formButton">Reset</button>
+                                    <a href="/campgrounds" class="btn btn-dark">Go Back</a>
+                                </div>
+    </form>
+    </div>
+
+    </div>
