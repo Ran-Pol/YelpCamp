@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const mongoose = require("mongoose");
 const ejsMate = require('ejs-mate')
+//Creating a wrapper function to handle our ASYNC routes ERRORHandling
+//This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
+const catchAsync = require('./utils/catchAsync')
 const methodOverride = require('method-override')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
@@ -39,16 +42,6 @@ app.use(methodOverride('_method'));
 
 
 
-//Creating a wrapper function to handle our ASYNC routes ERRORHandling
-//This allow us to forgo the use of try&catch methods
-function wrapAsync(fn) {
-    return function (req, res, next) {
-        fn(req, res, next).catch(e => next(e))
-    }
-}
-
-
-
 ////////Homepage 
 app.get('/', (req, res) => {
     res.render('home');
@@ -59,11 +52,11 @@ app.get('/', (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display a list of all products
 ////////MONGOOSE METHOD: => Product.find()
-app.get('/campgrounds', (req, res) => {
+app.get('/campgrounds', catchAsync(async (req, res) => {
     const camps = await Campground.find({});
-    res.render('campgrounds/index', { camps });
+    res.render('campgrounds/index', { camps })
 
-})
+}))
 
 
 ////////CRUD: => New    
@@ -80,23 +73,26 @@ app.get('/campgrounds/new', (req, res) => {
 ////////HTTP VERB: => POST
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
-app.post('/campgrounds', async (req, res) => {
+app.post('/campgrounds', catchAsync(async (req, res, next) => {
     const { title, price, city, state, description, image } = req.body;
-    const newCamp = await addNewCamp(title, price, city, state, description, image);
+    const location = `${city}, ${state}`;
+    const newCamp = new Campground({ title, price, location, description, image });
+    await newCamp.save();
     res.redirect(`/campgrounds/${newCamp._id}`);
+}))
 
-})
+
 
 ////////CRUD: => SHOW     
 // ////API ENDPOINT: =>  /products/:id
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show information about one product
 ////////MONGOOSE METHOD: => Product.findById()
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
     res.render('campgrounds/show', { camp })
-})
+}))
 
 
 ////////CRUD: => EDIT   
@@ -104,11 +100,11 @@ app.get('/campgrounds/:id', async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
     res.render('campgrounds/edit', { camp, stateList })
-});
+}));
 
 
 ////////CRUD: => UPDATE  
@@ -116,7 +112,7 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
 ////////HTTP VERB: => PUT
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-app.put('/campgrounds/:id', async (req, res) => {
+app.put('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const { title, price, city, state, description } = req.body;
     // const camp1 = await Campground.findById(id);
@@ -129,7 +125,7 @@ app.put('/campgrounds/:id', async (req, res) => {
     }, { new: true })
     // console.log(camp)
     res.redirect('/campgrounds');
-});
+}));
 
 
 ////////CRUD: => DELETE
@@ -137,47 +133,19 @@ app.put('/campgrounds/:id', async (req, res) => {
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-app.delete('/campgrounds/:id', async (req, res) => {
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
-})
+}))
 
 
 // Creating our custome error handler message using a middleware
 app.use((err, req, res, next) => {
-    const { status = 500, message = "Something went wrong" } = err;
-    res.status(status).send(message);
+    res.send("Something went wrong")
 })
-
-
-
-
 
 
 app.listen(3000, () => {
     console.log("Serving on port 3000")
 })
-
-
-
-
-function addNewCamp(title, price, city, state, description, image) {
-    const newCamp = new Campground({
-        title: title,
-        price: price,
-        description: description,
-        location: `${city}, ${state}`,
-        image: image,
-    })
-
-    newCamp.save()
-        .then(p => {
-            console.log(p)
-        })
-        .catch(e => {
-            console.log(e)
-        })
-
-    return newCamp
-}
