@@ -2,10 +2,13 @@ const express = require('express');
 const path = require('path');
 const mongoose = require("mongoose");
 const methodOverride = require('method-override')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
 const stateList = require("./seeds/stateList")
+const appError = require('./appError')
+
+
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -55,117 +58,72 @@ const verifyPassword = (req, res, next) => {
     if (password === 'chickennugget') {
         return next();
     }
-    res.send("YOU NEED A PASSWORD!")
+
+    throw new appError("You need the master access to get in.", 401)
+    // res.send("YOU NEED A PASSWORD!")
+    // throw new appError("Password required!", 400)
 };
 
+app.get("/gallos", async (req, res, next) => {
 
+    return next(new appError("This is the new app error", 403))
+    console.log("hello");
+}
+)
 
-// Creatig Our Personal Middleware that will run on a particular incoming request path
-app.use('/campgrounds/new', (req, res, next) => {
-    req.requesTime = Date.now();
-    console.log(req.method.toUpperCase(), req.path, req.params, req.requesTime)
-    console.log("I Love DOGS!")
-    next()
+app.get('/yes', (req, res) => {
+    res.send("I'm working on this program 24/7. Lets see what happens 3 months from now.")
 })
 
 
-////////CRUD: => INDEX    
-// ////API ENDPOINT: =>  /products
-////////HTTP VERB: => GET
-// ////PURPOSE: => Display a list of all products
-////////MONGOOSE METHOD: => Product.find()
-app.get('/campgrounds', async (req, res) => {
-    const camps = await Campground.find({});
-    res.render('campgrounds/index', { camps });
-
+app.get('/admin', (res, req) => {
+    throw new appError("You are not an Admin", 403)
 })
 
-
-////////CRUD: => New    
-// ////API ENDPOINT: =>  /products/new
-////////HTTP VERB: => GET
-// ////PURPOSE: => Display form to add a new product
-////////MONGOOSE METHOD: => N/A   
-app.get('/campgrounds/new', (req, res) => {
-    res.render("campgrounds/new", { stateList })
-})
-
-////////CRUD: => Create     
-// ////API ENDPOINT: =>  /products
-////////HTTP VERB: => POST
-// ////PURPOSE: => Add a new product to the database, redirect somewhere
-////////MONGOOSE METHOD: => Product.create() or Product.save()
-app.post('/campgrounds', async (req, res) => {
-    const { title, price, city, state, description } = req.body;
-    const newCamp = await addNewCamp(title, price, city, state, description);
-    res.redirect(`/campgrounds/${newCamp._id}`);
-
-})
-
-////////CRUD: => SHOW     
-// ////API ENDPOINT: =>  /products/:id
-////////HTTP VERB: => GET
-// ////PURPOSE: => Show information about one product
-////////MONGOOSE METHOD: => Product.findById()
-app.get('/campgrounds/:id', async (req, res) => {
-    const { id } = req.params;
-    const camp = await Campground.findById(id);
-    res.render('campgrounds/show', { camp })
-})
-
-
-////////CRUD: => EDIT   
-// ////API ENDPOINT: =>  /products/:id/edit
-////////HTTP VERB: => GET
-// ////PURPOSE: => Show edit form for one product
-////////MONGOOSE METHOD: => Product.findById()
-app.get('/campgrounds/:id/edit', async (req, res) => {
-    const { id } = req.params;
-    const camp = await Campground.findById(id);
-    res.render('campgrounds/edit', { camp, stateList })
-});
-
-
-////////CRUD: => UPDATE  
-// ////API ENDPOINT: =>  /products/:id
-////////HTTP VERB: => PUT
-// ////PURPOSE: => Update a particular product's data then redirect somewhere
-////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-app.put('/campgrounds/:id', async (req, res) => {
-    const { id } = req.params;
-    const { title, price, city, state, description } = req.body;
-    // const camp1 = await Campground.findById(id);
-    // console.log(camp1)
-    const camp = await Campground.findByIdAndUpdate(id, {
-        title: title,
-        price: price,
-        description: description,
-        location: `${city}, ${state}`
-    }, { new: true })
-    // console.log(camp)
-    res.redirect('/campgrounds');
-});
-
-
-////////CRUD: => DELETE
-// ////API ENDPOINT: =>  /products/:id
-////////HTTP VERB: => DELTE
-// ////PURPOSE: => Delete a particular product's data then redirect somewhere
-////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-app.delete('/campgrounds/:id', async (req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect('/campgrounds');
-})
 
 app.get('/secret', verifyPassword, (req, res) => {
     res.send("I'm working on this program 24/7. Lets see what happens 3 months from now.")
 })
 
+
+
+function wrapAsync(fn) {
+    reutrn function
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/error', (req, res) => {
+    chicken.toUpperCase();
+})
 // We can use this Middleware at the end of all routes 
 // incase the page/the requeest was not found
 app.use((req, res) => {
     res.send("Page not found")
+})
+
+
+// app.use((err, req, res, next) => {
+//     console.log("#######################################");
+//     console.log("##############ERRRRO############");
+//     console.log("#######################################");
+//     next(err)
+// })
+
+app.use((err, req, res, next) => {
+    const { status = 500, message = 'Something Went Wrong' } = err;
+    res.status(status).send(message)
 })
 
 
