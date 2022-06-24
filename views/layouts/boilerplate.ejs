@@ -39,6 +39,36 @@ We are using the ejs ENGINE: ejs-mate -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
                 crossorigin="anonymous"></script>
+
+
+
+
+            <!-- We can do the same by calling the static file with a absolute path -->
+            <!-- <script src="/js/formValidation.js"> -->
+
+            <script>
+
+                (function () {
+                    'use strict'
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    const form = document.querySelectorAll('.validated-form')
+
+                    // Loop over them and prevent submission
+                    Array.from(form)
+                        .forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+                                form.classList.add('was-validated')
+                            }, false)
+                        })
+                })()
+
+
+
+            </script>
 </body>
 
 </html>

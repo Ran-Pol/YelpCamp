@@ -3,46 +3,63 @@
     <div class="row">
         <h1 class="text-center">Create A New Camp Ground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="post" novalidate>
+            <form action="/campgrounds" method="post" class="validated-form" novalidate>
                 <!-- Camp's Name -->
                 <div class="mb-3">
                     <label for="title" class="form-label">Camp name</label>
                     <input type="text" name="title" class="form-control" id="title" placeholder="Enter name" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
 
                 </div>
                 <!-- Camp's Image -->
                 <div class="mb-3">
                     <label for="image" class="form-label">Image url</label>
                     <input type="text" name="image" class="form-control" id="image" placeholder="Enter url" required>
-
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Camp's Price -->
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <input type="number" name="price" class="form-control" id="price" placeholder="0.00" required>
+                    <input type="text" name="price" class="form-control" id="price" placeholder="0.00" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Camp's City -->
                 <div class="mb-3">
                     <label for="city" class="form-label">City</label>
                     <input type="text" name="city" class="form-control" id="city" placeholder="Enter city" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Camp's State -->
                 <div class="mb-3">
                     <label for="state" class="form-label">State</label>
                     <select class="form-select" id="state" name="state" aria-label="Default select example" required>
-                        <option selected>Select state</option>
+                        <option selected disabled value="">Select state</option>
                         <%for (const state in stateList) {%>
                             <option value="<%=stateList[state]%>">
                                 <%=stateList[state]%>
                             </option>
                             <%} %>
                     </select>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Camp's Description -->
                 <div class="mb-3 form-floating">
                     <textarea class="form-control" placeholder="Leave a comment here" id="description"
                         style="height: 100px" required></textarea>
                     <label for="description" class="form-label">Camp description...</label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Submit Button -->
                 <div class="formBottomButton">

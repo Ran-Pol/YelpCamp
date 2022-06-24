@@ -7,51 +7,71 @@
         </h1>
 
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="post">
+            <form action="/campgrounds" method="post" class="validated-form" novalidate>
                 <!-- Camp' s Name -->
                 <div class="mb-3">
                     <label for="title" class="form-label">Camp name</label>
                     <input type="text" name="title" class="form-control" id="title" placeholder="Enter name"
-                        value="<%= camp.title %> ">
-
+                        value="<%= camp.title %>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <!-- Camp's Image -->
                 <div class="mb-3">
                     <label for="image" class="form-label">Image url</label>
                     <input type="text" name="image" class="form-control" id="image" placeholder="Enter url"
-                        value="<%= camp.image %> ">
-                    <!-- Camp's Price -->
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" name="price" class="form-control" id="price" placeholder="Enter amount"
-                            value="<%=camp.price%>">
+                        value="<%= camp.image %> " required>
+                    <div class="valid-feedback">
+                        Looks good!
                     </div>
-                    <!-- Camp's City -->
-                    <div class="mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" name="city" class="form-control" id="city" placeholder="Enter city"
-                            value="<%=camp.location.split(',')[0]%>">
+                </div>
+                <!-- Camp's Price -->
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" name="price" class="form-control" id="price" placeholder="Enter amount"
+                        value="<%=camp.price%>" required>
+                    <div class="valid-feedback">
+                        Looks good!
                     </div>
-                    <!-- Camp's State -->
-                    <div class="mb-3">
-                        <label for="state" class="form-label">State</label>
-                        <select class="form-select" id="state" name="state" aria-label="Default select example">
-                            <option selected>Select state</option>
-                            <%for (const state in stateList) {%>
-                                <option value="<%=stateList[state]%>" <%=camp.location.split(', ')[1]===stateList[state]?
-                                                "selected":'' %>>
-                                                <%=stateList[state]%>
+                </div>
+                <!-- Camp's City -->
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" name="city" class="form-control" id="city" placeholder="Enter city"
+                        value="<%=camp.location.split(',')[0]%>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+
+                <!-- Camp's State -->
+                <div class="mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <select class="form-select" id="state" name="state" aria-label="Default select example" required>
+                        <option selected disabled value="">Select state</option>
+                        <%for (const state in stateList) {%>
+                            <option value=<%=`${stateList[state]}`%>
+                                <%=`${camp.location.split(', ')[1]===stateList[state]?
+                                                "selected":''}`%>>
+                                                <%=`${stateList[state]}`%>
                                             </option>
-                                            <%} %>
-                                    </select>
-                                </div>
-                                <!-- Camp' s Description -->
+                        <%} %>
+                    </select>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                 <!-- Camp' s Description -->
                                     <div class="mb-3 ">
                                         <label for="description" class="form-label">Description</label>
                                         <textarea class="form-control" placeholder="Camp description..."
-                                            id="description" style="height: 100px"><%=camp.description%>
-                                                    </textarea>
-
+                                            id="description" style="height: 100px"
+                                            required> <%=`${camp.description}`%></textarea>
+                                        <div class="valid-feedback">
+                                            Looks good!
+                                        </div>
                                     </div>
                                     <!-- Submit Button -->
                                     <div class="formBottomButton">

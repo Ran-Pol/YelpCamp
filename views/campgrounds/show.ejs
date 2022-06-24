@@ -25,15 +25,18 @@
                         <%= camp.description %>
 
                     </p>
-                    <p class="card-text">
-                        <a class="btn btn-primary" href=<%=`/campgrounds/${camp._id}/edit`%>
-                            >edit</a>
+                    <div class="formBottomButton">
+                        <a href=<%=`/campgrounds/${camp._id}/edit`%> class="btn btn-primary formButton ">Edit</a>
 
-                    </p>
+                        <form action=<%=`/campgrounds/${camp._id}?_method=delete`%> method="post">
+                            <button type="submit" class="btn btn-danger formButton ">Delete</button>
+                        </form>
+                    </div>
 
                 </div>
 
-                <div class="card-footer">2 dyas ago</div>
+                <div class="card-footer">2 days ago</div>
+
 
             </div>
         </div>

@@ -13,9 +13,9 @@ img {
 
 .formBottomButton {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
-    margin-bottom: 50px;
+    /* margin-bottom: 50px; */
 
 }
 

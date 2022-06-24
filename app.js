@@ -39,7 +39,7 @@ app.use(methodOverride('_method'));
 
 
 
-//Creating a wrapper function to handle our ASYNC routes functions erros
+//Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods
 function wrapAsync(fn) {
     return function (req, res, next) {
@@ -59,11 +59,11 @@ app.get('/', (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display a list of all products
 ////////MONGOOSE METHOD: => Product.find()
-app.get('/campgrounds', wrapAsync(async (req, res) => {
+app.get('/campgrounds', (req, res) => {
     const camps = await Campground.find({});
     res.render('campgrounds/index', { camps });
 
-}))
+})
 
 
 ////////CRUD: => New    
@@ -149,6 +149,10 @@ app.use((err, req, res, next) => {
     const { status = 500, message = "Something went wrong" } = err;
     res.status(status).send(message);
 })
+
+
+
+
 
 
 app.listen(3000, () => {
