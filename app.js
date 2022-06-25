@@ -32,7 +32,7 @@ const app = express();
 // that are needed to Dynamicaly create pages to later render
 app.set("views", path.join(__dirname, "views"));
 // Design Engine to Run/Parse EJS. We are telling express that 
-// We want to use this one ejs-mate insted of the default.
+// We want to use this ejs engine: ejs-mate insted of the default.
 app.engine('ejs', ejsMate);
 //  EJS is a simple templating language that lets you generate HTML markup with plain JavaScript. 
 app.set("view engine", "ejs");
@@ -81,7 +81,7 @@ app.get('/campgrounds/new', (req, res) => {
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
-    console.log(_.isEmpty(req.body))
+    // console.log(_.isEmpty(req.body.title))
     if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
     const { title, price, city, state, description, image } = req.body;
     const location = `${city}, ${state}`;
@@ -156,8 +156,10 @@ app.all('*', (req, res, next) => {
 
 // Creating our custome error handler message using a middleware
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).send(message);
+    console.log(err)
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = "Oh No, Something Went Wrong"
+    res.status(statusCode).render('error', { err })
 })
 
 
