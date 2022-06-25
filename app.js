@@ -5,10 +5,15 @@ const ejsMate = require('ejs-mate')
 //Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
 const catchAsync = require('./utils/catchAsync')
+const ExpressError = require('./utils/ExpressError')
 const methodOverride = require('method-override')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
 const stateList = require("./seeds/stateList")
+// req.body Parser
+bodyParser = require('body-parser')
+
+_ = require('lodash');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -37,6 +42,8 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, 'public')))
 //Express.urlencoded allows us to read the body data/ parses the data
 app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
 
@@ -74,6 +81,8 @@ app.get('/campgrounds/new', (req, res) => {
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
+    console.log(_.isEmpty(req.body))
+    if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
     const { title, price, city, state, description, image } = req.body;
     const location = `${city}, ${state}`;
     const newCamp = new Campground({ title, price, location, description, image });
@@ -140,9 +149,15 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 }))
 
 
+app.all('*', (req, res, next) => {
+    next(new ExpressError("Page Not Found", 404))
+}
+)
+
 // Creating our custome error handler message using a middleware
 app.use((err, req, res, next) => {
-    res.send("Something went wrong")
+    const { statusCode = 500, message = "Something went wrong" } = err;
+    res.status(statusCode).send(message);
 })
 
 
