@@ -12,8 +12,10 @@ const Campground = require("./models/campground")
 const stateList = require("./seeds/stateList")
 // req.body Parser
 bodyParser = require('body-parser')
-
-_ = require('lodash');
+const Joi = require('joi');
+// Lodash is a utiliti package that has some of the most common day to day 
+//javascripts methods/operations
+const _ = require('lodash');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -48,6 +50,33 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 
+//Middleware in order to process validate all post/put data
+
+const validateCampground = (req, res, next) => {
+    const campGround = req.body;
+    const campgroundSchema = Joi.object({
+        // In case we choose to go with Colt's way: 
+        // name='campground[title]'
+        // campGround: Joi.object({
+        title: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        city: Joi.string().required(),
+        state: Joi.string().required(),
+        image: Joi.string().required(),
+        description: Joi.string().required(),
+        // }).required()
+    })
+    const { error } = campgroundSchema.validate(campGround);
+    //const message = result.error.details[0].message
+    const message = error.details.map(el => el.message).join(",")
+    if (message) {
+        throw new ExpressError(message, 400)
+    } else {
+        next();
+    }
+}
+
+
 
 ////////Homepage 
 app.get('/', (req, res) => {
@@ -80,9 +109,9 @@ app.get('/campgrounds/new', (req, res) => {
 ////////HTTP VERB: => POST
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
-app.post('/campgrounds', catchAsync(async (req, res, next) => {
+app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
     // console.log(_.isEmpty(req.body.title))
-    if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
+    // if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
     const { title, price, city, state, description, image } = req.body;
     const location = `${city}, ${state}`;
     const newCamp = new Campground({ title, price, location, description, image });
@@ -156,7 +185,7 @@ app.all('*', (req, res, next) => {
 
 // Creating our custome error handler message using a middleware
 app.use((err, req, res, next) => {
-    console.log(err)
+    // console.log(err)
     const { statusCode = 500 } = err;
     if (!err.message) err.message = "Oh No, Something Went Wrong"
     res.status(statusCode).render('error', { err })
