@@ -12,7 +12,7 @@ const Campground = require("./models/campground")
 const stateList = require("./seeds/stateList")
 // req.body Parser
 bodyParser = require('body-parser')
-const Joi = require('joi');
+const { campgroundSchema } = require('./joiSchema');
 // Lodash is a utiliti package that has some of the most common day to day 
 //javascripts methods/operations
 const _ = require('lodash');
@@ -50,26 +50,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 
-//Middleware in order to process validate all post/put data
-
+//Middleware function in order to validate all post/put HTPP request
+//But we dont want to do it like: app.use() which will run on every request.
+// Instead we want to select the particular route we want to use this
+// middleware
 const validateCampground = (req, res, next) => {
     const campGround = req.body;
-    const campgroundSchema = Joi.object({
-        // In case we choose to go with Colt's way: 
-        // name='campground[title]'
-        // campGround: Joi.object({
-        title: Joi.string().required(),
-        price: Joi.number().required().min(0),
-        city: Joi.string().required(),
-        state: Joi.string().required(),
-        image: Joi.string().required(),
-        description: Joi.string().required(),
-        // }).required()
-    })
     const { error } = campgroundSchema.validate(campGround);
-    //const message = result.error.details[0].message
-    const message = error.details.map(el => el.message).join(",")
-    if (message) {
+    if (error) {
+        //const message = result.error.details[0].message
+        const message = error.details.map(el => el.message).join(",")
         throw new ExpressError(message, 400)
     } else {
         next();
@@ -150,7 +140,7 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
 ////////HTTP VERB: => PUT
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-app.put('/campgrounds/:id', catchAsync(async (req, res) => {
+app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const { title, price, city, state, description } = req.body;
     // const camp1 = await Campground.findById(id);
