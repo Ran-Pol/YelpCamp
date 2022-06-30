@@ -36,8 +36,16 @@
                 </div>
 
                 <div class="card-footer">2 days ago</div>
-
-
             </div>
+            <form action="">
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating</label>
+                    <input type="range" class="form-range" min="0" max="5" name="review[rating]" id="rating">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
+                </div>
+            </form>
         </div>
     </div>
