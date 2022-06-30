@@ -134,7 +134,7 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
 ////////MONGOOSE METHOD: => Product.findById()
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const camp = await Campground.findById(id);
+    const camp = await Campground.findById(id).populate('reviews');
     res.render('campgrounds/show', { camp })
 }))
 
@@ -193,13 +193,19 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res)
     await newReview.save()
     await campGround.save()
     // const extraCamp = await campGround.populate('Review').then(data => console.log(data))
-    console.log(campGround);
+    // console.log(campGround);
     res.redirect(`/campgrounds/${id}`)
 
 }))
 
 
 
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+}))
 
 
 
