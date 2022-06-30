@@ -12,3 +12,16 @@ module.exports.campgroundSchema = Joi.object({
     description: Joi.string().required(),
     // }).required()
 })
+
+
+
+
+module.exports.reviewSchema = Joi.object({
+    // In case we choose to go with Colt's way: 
+    // name='campground[title]'
+    review: Joi.object({
+        body: Joi.string().required(),
+        rating: Joi.number().required().min(0).max(5),
+    }).required()
+})
+

@@ -9,10 +9,12 @@ const ExpressError = require('./utils/ExpressError')
 const methodOverride = require('method-override')
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
+const Review = require("./models/review")
 const stateList = require("./seeds/stateList")
 // req.body Parser
 bodyParser = require('body-parser')
 const { campgroundSchema } = require('./joiSchema');
+const { reviewSchema } = require('./joiSchema');
 // Lodash is a utiliti package that has some of the most common day to day 
 //javascripts methods/operations
 const _ = require('lodash');
@@ -65,6 +67,20 @@ const validateCampground = (req, res, next) => {
         next();
     }
 }
+const validateReview = (req, res, next) => {
+    const newReview = req.body;
+    console.log(newReview)
+    const { error } = reviewSchema.validate(newReview);
+    if (error) {
+        //const message = result.error.details[0].message
+        const message = error.details.map(el => el.message).join(",")
+        throw new ExpressError(message, 400)
+    } else {
+        next();
+    }
+}
+
+
 
 
 
@@ -166,6 +182,27 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 }))
+
+
+////////Reviews Route
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const { id } = req.params
+    const campGround = await Campground.findById(id)
+    const newReview = new Review(req.body.review)
+    campGround.reviews.push(newReview);
+    await newReview.save()
+    await campGround.save()
+    // const extraCamp = await campGround.populate('Review').then(data => console.log(data))
+    console.log(campGround);
+    res.redirect(`/campgrounds/${id}`)
+
+}))
+
+
+
+
+
+
 
 
 app.all('*', (req, res, next) => {

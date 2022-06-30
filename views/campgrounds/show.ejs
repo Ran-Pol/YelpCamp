@@ -37,14 +37,24 @@
 
                 <div class="card-footer">2 days ago</div>
             </div>
-            <form action="">
+            <form action='/campgrounds/<%=camp._id%>/reviews' class="mb-3 validated-form" method="POST" novalidate>
+                <h2 class="title">Leave a Review</h2>
                 <div class="mb-3">
                     <label for="rating" class="form-label">Rating</label>
-                    <input type="range" class="form-range" min="0" max="5" name="review[rating]" id="rating">
+                    <input type="range" class="form-range" min="0" max="5" name="review[rating]" id="rating" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="body">Review</label>
-                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-success">
+                        Add Review
+                    </button>
                 </div>
             </form>
         </div>
