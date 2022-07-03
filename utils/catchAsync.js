@@ -9,7 +9,6 @@ module.exports = func => {
 
 
 
-
 // app.get('/product/:id', async (req, res, next) => {
 //     try {
 //         const { id } = req.params;
@@ -39,3 +38,22 @@ module.exports = func => {
 //     res.render('products/show', { product })
 
 // }))
+
+
+
+
+// // Is it essentially mean this: ===>
+// function catchAsync(fn) {
+//     return function (req, res, next) {
+//         (async (req, res, next) => {
+//             const { id } = req.params;
+//             const product = await Product.findById(id)
+//             if (!product) {
+//                 throw new AppError('Product Not Found', 404)
+//             }
+//             res.render('products/show', { product })
+
+//         }).catch(e => next(e))
+//     }
+// }
+

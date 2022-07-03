@@ -19,8 +19,10 @@ const CampgroundsSchema = new Schema({
 
 
 // DELETE ALL ASSOCIATED REVIEWS AFTER A CAMPGROUND IS DELETED
-// Campground Delete Middleware
+// Campground Delete 
+// Query Middleware
 CampgroundsSchema.post('findOneAndDelete', async function (campGround) {
+    console.log(campGround)
     if (campGround.reviews.length) {
         const res = await Review.deleteMany({ _id: { $in: campGround.reviews } })
         console.log(res);
