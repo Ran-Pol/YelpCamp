@@ -19,6 +19,7 @@ const stateList = require("../seeds/stateList")
 // middleware
 const validateCampground = (req, res, next) => {
     const campGround = req.body;
+    // console.log(req.body)
     const { error } = campgroundSchema.validate(campGround);
     if (error) {
         //const message = result.error.details[0].message
@@ -100,6 +101,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 router.put('/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const { title, price, city, state, description } = req.body;
+    // console.log("Checking before updating")
     // const camp1 = await Campground.findById(id);
     // console.log(camp1)
     const camp = await Campground.findByIdAndUpdate(id, {

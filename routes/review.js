@@ -1,24 +1,25 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 //Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 
 // Getting the model that we create from the origional Schema 
+const Campground = require("../models/campground")
 const Review = require("../models/review")
 
 // JoiSchema Vaidation
-const { reviewSchema } = require('./joiSchema');
+const { reviewSchema } = require('../joiSchema');
 
 
 
 const validateReview = (req, res, next) => {
     const newReview = req.body;
-    // console.log(newReview)
     const { error } = reviewSchema.validate(newReview);
     if (error) {
         //const message = result.error.details[0].message
+        console.log("inside of the if statement for error")
         const message = error.details.map(el => el.message).join(",")
         throw new ExpressError(message, 400)
     } else {
@@ -29,10 +30,11 @@ const validateReview = (req, res, next) => {
 
 
 
-////////Reviews Route
-router.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+////////Create Reviews Route
+router.post('/', validateReview, catchAsync(async (req, res) => {
     const { id } = req.params
     const campGround = await Campground.findById(id)
+    // console.log("This is the campgroudn inside create Route: ", campGround)
     const newReview = new Review(req.body.review)
     campGround.reviews.push(newReview);
     await newReview.save()
@@ -45,8 +47,8 @@ router.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, r
 
 
 
-////////Delete Route
-router.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+////////Delete Reviews Route
+router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);

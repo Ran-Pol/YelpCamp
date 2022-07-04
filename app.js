@@ -2,29 +2,28 @@ const express = require('express');
 const path = require('path');
 const mongoose = require("mongoose");
 const ejsMate = require('ejs-mate')
+const session = require('express-session')
+const flash = require('connect-flash')
 //Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
-const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 const methodOverride = require('method-override')
-// Getting the model that we create from the origional Schema 
-const Campground = require("./models/campground")
-const Review = require("./models/review")
-const stateList = require("./seeds/stateList")
 // req.body Parser
 bodyParser = require('body-parser')
-const { campgroundSchema } = require('./joiSchema');
-const { reviewSchema } = require('./joiSchema');
 // Lodash is a utiliti package that has some of the most common day to day 
 //javascripts methods/operations
 const _ = require('lodash');
 
-// Reuqiring the campground routes that we seperated to a different file to clean the main app file
+// Requiring the campground routes that we seperated to a different file to clean the main app file
 const campgrounds = require("./routes/campground");
 const reviews = require("./routes/review");
 
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // useFindAndModify: false
+})
     .then(() => {
         console.log("MONGO CONNECTION OPEN!!!")
     })
@@ -52,15 +51,28 @@ app.use(express.static(path.join(__dirname, 'public')))
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 
-
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
 
+// This are the arguments to the session
+const sessionConfig = {
+    secret: 'thisshouldbeabetterscret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+app.use(session(sessionConfig))
+
+app.use(flash());
 
 // We are creating a middleware for our campgroundsroutes that are store in a seperate files
 app.use("/campgrounds", campgrounds)
 // We are creating a middleware for our reviews routes that are store in a seperate files
-app.use("/campgrounds", reviews)
+app.use("/campgrounds/:id/reviews", reviews)
 
 
 ////////Homepage 
