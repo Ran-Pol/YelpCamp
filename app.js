@@ -54,7 +54,7 @@ app.use(express.urlencoded({ extended: true }));
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
 
-// This are the arguments to the session
+// This are the setting arguments to the session
 const sessionConfig = {
     secret: 'thisshouldbeabetterscret',
     resave: false,
@@ -68,6 +68,17 @@ const sessionConfig = {
 app.use(session(sessionConfig))
 
 app.use(flash());
+
+// Route middleware on every single request
+// Whatever is in the flash under success
+// Have acces in our locals under the keys success
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success')
+    res.locals.error = req.flash('error')
+
+    next();
+})
+
 
 // We are creating a middleware for our campgroundsroutes that are store in a seperate files
 app.use("/campgrounds", campgrounds)

@@ -34,13 +34,14 @@ const validateReview = (req, res, next) => {
 router.post('/', validateReview, catchAsync(async (req, res) => {
     const { id } = req.params
     const campGround = await Campground.findById(id)
-    // console.log("This is the campgroudn inside create Route: ", campGround)
+    // console.log("This is the campground inside create Route: ", campGround)
     const newReview = new Review(req.body.review)
     campGround.reviews.push(newReview);
     await newReview.save()
     await campGround.save()
     // const extraCamp = await campGround.populate('Review').then(data => console.log(data))
     // console.log(campGround);
+    req.flash("success", "Your new review was successfully created!")
     res.redirect(`/campgrounds/${id}`)
 
 }))
@@ -52,6 +53,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Your review was successfully deleted!")
     res.redirect(`/campgrounds/${id}`);
 }))
 
