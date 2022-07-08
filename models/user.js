@@ -13,3 +13,5 @@ const UserSchema = new Schema({
 // We are using this plugin and it will take care of the following:
 // 1. Username 2.Password 3. Uniqueness(Not duplicating)
 UserSchema.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('User', UserSchema)

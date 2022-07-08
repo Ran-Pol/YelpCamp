@@ -14,6 +14,14 @@ bodyParser = require('body-parser')
 //javascripts methods/operations
 const _ = require('lodash');
 
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
+const User = require('./models/user')
+
+
+
+
 // Requiring the campground routes that we seperated to a different file to clean the main app file
 const campgrounds = require("./routes/campground");
 const reviews = require("./routes/review");
@@ -79,7 +87,18 @@ app.use((req, res, next) => {
     next();
 })
 
+app.use(passport.initialize());
+app.use(passport.session());
+// Hello passport we would like you to use the local strategy we downloded.
+//Use the static methods that comes with passport-local-mongoose
+passport.use(new LocalStrategy(User.authenticate()));
+// Get user into a session
+passport.serializeUser(User.serializeUser());
+// Get user out of the session
+passport.deserializeUser(User.deserializeUser());
 
+
+//Routes//
 // We are creating a middleware for our campgroundsroutes that are store in a seperate files
 app.use("/campgrounds", campgrounds)
 // We are creating a middleware for our reviews routes that are store in a seperate files
