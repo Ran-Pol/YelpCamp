@@ -23,8 +23,9 @@ const User = require('./models/user')
 
 
 // Requiring the campground routes that we seperated to a different file to clean the main app file
-const campgrounds = require("./routes/campground");
-const reviews = require("./routes/review");
+const campgroundsRoutes = require("./routes/campground");
+const reviewsRoutes = require("./routes/review");
+const usersRoutes = require("./routes/users");
 
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -83,6 +84,7 @@ app.use(flash());
 app.use((req, res, next) => {
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
+    res.locals.welcome = req.flash('welcome')
 
     next();
 })
@@ -99,10 +101,12 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //Routes//
+// Users Routes
+app.use("/", usersRoutes)
 // We are creating a middleware for our campgroundsroutes that are store in a seperate files
-app.use("/campgrounds", campgrounds)
+app.use("/campgrounds", campgroundsRoutes)
 // We are creating a middleware for our reviews routes that are store in a seperate files
-app.use("/campgrounds/:id/reviews", reviews)
+app.use("/campgrounds/:id/reviews", reviewsRoutes)
 
 
 ////////Homepage 
