@@ -15,7 +15,7 @@ bodyParser = require('body-parser')
 const _ = require('lodash');
 
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const localStrategy = require('passport-local');
 
 const User = require('./models/user')
 
@@ -89,15 +89,16 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use(passport.initialize());
-app.use(passport.session());
+// ==================== Setup Passport =============
+app.use(passport.initialize())
+app.use(passport.session())
 // Hello passport we would like you to use the local strategy we downloded.
 //Use the static methods that comes with passport-local-mongoose
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new localStrategy(User.authenticate()))
 // Get user into a session
-passport.serializeUser(User.serializeUser());
+passport.serializeUser(User.serializeUser())
 // Get user out of the session
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser(User.deserializeUser())
 
 
 //Routes//
