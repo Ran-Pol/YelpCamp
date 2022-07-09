@@ -33,9 +33,14 @@ router.get('/login', (req, res) => {
 });
 
 // Login//POST
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login', keepSessionInfo: true }), (req, res) => {
     req.flash('success', 'Welcome back!');
     const redirectUrl = req.session.returnTo || '/campgrounds';
+    console.log("Before:")
+    console.log(req.session)
+    delete req.session.returnTo;
+    console.log("After:")
+    console.log(req.session)
     res.redirect(redirectUrl);
 });
 
@@ -46,6 +51,7 @@ router.get('/logout', (req, res, next) => {
         req.flash('success', "Goodbye!");
         res.redirect('/campgrounds');
     });
+
 });
 
 module.exports = router;
