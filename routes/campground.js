@@ -13,6 +13,8 @@ const { campgroundSchema } = require('../joiSchema');
 
 const stateList = require("../seeds/stateList")
 
+const { isLoggedIn } = require('../middleware')
+
 //Middleware function in order to validate all post/put HTPP request
 //But we dont want to do it like: app.use() which will run on every request.
 // Instead we want to select the particular route we want to use this
@@ -48,7 +50,7 @@ router.get('/', catchAsync(async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display form to add a new product
 ////////MONGOOSE METHOD: => N/A   
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render("campgrounds/new", { stateList })
 })
 
@@ -58,7 +60,7 @@ router.get('/new', (req, res) => {
 ////////HTTP VERB: => POST
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
-router.post('/', validateCampground, catchAsync(async (req, res, next) => {
+router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
     // console.log(_.isEmpty(req.body.title))
     // if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
     const { title, price, city, state, description, image } = req.body;
@@ -91,7 +93,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
     if (!camp) {
@@ -129,10 +131,10 @@ router.put('/:id', validateCampground, catchAsync(async (req, res) => {
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
-    req.flash('deleted', 'Successfully deleted a campground');
+    req.flash('success', 'Successfully deleted a campground');
     res.redirect('/campgrounds');
 }))
 

@@ -78,17 +78,6 @@ app.use(session(sessionConfig))
 
 app.use(flash());
 
-// Route middleware on every single request
-// Whatever is in the flash under success
-// Have acces in our locals under the keys success
-app.use((req, res, next) => {
-    res.locals.success = req.flash('success')
-    res.locals.error = req.flash('error')
-    res.locals.welcome = req.flash('welcome')
-
-    next();
-})
-
 // ==================== Setup Passport =============
 app.use(passport.initialize())
 app.use(passport.session())
@@ -99,6 +88,19 @@ passport.use(new localStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 // Get user out of the session
 passport.deserializeUser(User.deserializeUser())
+
+
+// Route middleware on every single request
+// Whatever is in the flash under success
+// Have acces in our locals under the keys success
+app.use((req, res, next) => {
+    console.log(req.session)
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success')
+    res.locals.error = req.flash('error')
+    res.locals.welcome = req.flash('welcome')
+    next();
+})
 
 
 //Routes//
