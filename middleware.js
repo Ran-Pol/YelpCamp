@@ -1,5 +1,6 @@
 // Getting the model that we create from the origional Schema 
 const Campground = require("./models/campground")
+const Review = require("./models/review")
 // JoiSchema Vaidation
 const { campgroundSchema, reviewSchema } = require('./joiSchema');
 
@@ -38,6 +39,16 @@ module.exports.isAuthor = async (req, res, next) => {
     const getCamp = await Campground.findById(id);
 
     if (!getCamp.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that.')
+        return res.redirect(`/campgrounds/${id}`)
+    }
+    next();
+}
+module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, reviewId } = req.params;
+    const getReview = await Review.findById(reviewId);
+
+    if (!getReview.author.equals(req.user._id)) {
         req.flash('error', 'You do not have permission to do that.')
         return res.redirect(`/campgrounds/${id}`)
     }
