@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { index,
-    getNewCampground,
-    postNewCampground,
-    showCampground,
-    editCampground,
-    updateCampground,
-    deleteCampground } = require('../controllers/campgrounds')
+const campControllers = require('../controllers/campgrounds')
 
 
 const { isLoggedIn,
@@ -21,7 +15,7 @@ const { isLoggedIn,
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display a list of all products
 ////////MONGOOSE METHOD: => Product.find()
-router.get('/', index)
+router.get('/', campControllers.index)
 
 
 ////////CRUD: => New    
@@ -29,7 +23,7 @@ router.get('/', index)
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display form to add a new product
 ////////MONGOOSE METHOD: => N/A   
-router.get('/new', isLoggedIn, getNewCampground)
+router.get('/new', isLoggedIn, campControllers.getNewCampground)
 
 
 ////////CRUD: => Create     
@@ -37,7 +31,7 @@ router.get('/new', isLoggedIn, getNewCampground)
 ////////HTTP VERB: => POST
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
-router.post('/', isLoggedIn, validateCampground, postNewCampground)
+router.post('/', isLoggedIn, validateCampground, campControllers.postNewCampground)
 
 
 ////////CRUD: => SHOW     
@@ -45,7 +39,7 @@ router.post('/', isLoggedIn, validateCampground, postNewCampground)
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show information about one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id', showCampground)
+router.get('/:id', campControllers.showCampground)
 
 
 ////////CRUD: => EDIT   
@@ -53,7 +47,7 @@ router.get('/:id', showCampground)
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id/edit', isLoggedIn, isAuthor, editCampground);
+router.get('/:id/edit', isLoggedIn, isAuthor, campControllers.editCampground);
 
 
 ////////CRUD: => UPDATE  
@@ -61,7 +55,7 @@ router.get('/:id/edit', isLoggedIn, isAuthor, editCampground);
 ////////HTTP VERB: => PUT
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, updateCampground);
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, campControllers.updateCampground);
 
 
 ////////CRUD: => DELETE
@@ -69,6 +63,6 @@ router.put('/:id', isLoggedIn, isAuthor, validateCampground, updateCampground);
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-router.delete('/:id', isLoggedIn, isAuthor, deleteCampground)
+router.delete('/:id', isLoggedIn, isAuthor, campControllers.deleteCampground)
 
 module.exports = router;

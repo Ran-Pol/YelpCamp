@@ -16,11 +16,7 @@ const _ = require('lodash');
 
 const passport = require('passport');
 const localStrategy = require('passport-local');
-
 const User = require('./models/user')
-
-
-
 
 // Requiring the campground routes that we seperated to a different file to clean the main app file
 const campgroundsRoutes = require("./routes/campground");
