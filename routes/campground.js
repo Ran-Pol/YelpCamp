@@ -3,34 +3,16 @@ const router = express.Router();
 //Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
 const catchAsync = require('../utils/catchAsync')
-const ExpressError = require('../utils/ExpressError')
 
 // Getting the model that we create from the origional Schema 
 const Campground = require("../models/campground")
 
-// JoiSchema Vaidation
-const { campgroundSchema } = require('../joiSchema');
+
 
 const stateList = require("../seeds/stateList")
 
-const { isLoggedIn } = require('../middleware')
+const { isLoggedIn, validateCampground, isAuthor } = require('../middleware')
 
-//Middleware function in order to validate all post/put HTPP request
-//But we dont want to do it like: app.use() which will run on every request.
-// Instead we want to select the particular route we want to use this
-// middleware
-const validateCampground = (req, res, next) => {
-    const campGround = req.body;
-    // console.log(req.body)
-    const { error } = campgroundSchema.validate(campGround);
-    if (error) {
-        //const message = result.error.details[0].message
-        const message = error.details.map(el => el.message).join(",")
-        throw new ExpressError(message, 400)
-    } else {
-        next();
-    }
-}
 
 
 ////////CRUD: => INDEX    
@@ -66,6 +48,7 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
     const { title, price, city, state, description, image } = req.body;
     const location = `${city}, ${state}`;
     const newCamp = new Campground({ title, price, location, description, image });
+    newCamp.author = req.user._id;
     await newCamp.save();
     req.flash('success', 'Successfully made a new campground');
     res.redirect(`/campgrounds/${newCamp._id}`);
@@ -79,11 +62,16 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 ////////MONGOOSE METHOD: => Product.findById()
 router.get('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const camp = await Campground.findById(id).populate('reviews');
-    if (!camp) {
-        req.flash('error', "Campground doesn't exits");
-        return res.redirect("/campgrounds")
-    }
+    const camp = await Campground.findById(id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author');
+
+
+    // console.log(camp)
+
     res.render('campgrounds/show', { camp })
 }))
 
@@ -93,7 +81,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findById(id);
     if (!camp) {
@@ -109,7 +97,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 ////////HTTP VERB: => PUT
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-router.put('/:id', validateCampground, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const { title, price, city, state, description } = req.body;
     // console.log("Checking before updating")
@@ -123,6 +111,7 @@ router.put('/:id', validateCampground, catchAsync(async (req, res) => {
     }, { new: true })
     req.flash('success', 'Successfully updated campground');
     res.redirect(`/campgrounds/${camp._id}`);
+
 }));
 
 
@@ -131,8 +120,9 @@ router.put('/:id', validateCampground, catchAsync(async (req, res) => {
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
+
     await Campground.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted a campground');
     res.redirect('/campgrounds');

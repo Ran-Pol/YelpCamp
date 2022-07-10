@@ -27,6 +27,7 @@ const seedDB = async () => {
         const randomDescriptors = sample(descriptors);
 
         const newCamp = new Campground({
+            author: '62c7c17d0e6f2fc4228c7e21',
             title: `${randomPlaces} ${randomDescriptors}`,
             price: (Math.floor(Math.random() * 50) + 20),
             description: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa eius asperiores, quis quod velit non perspiciatis officiis rerum natus veniam molestiae vel neque nisi, consequatur quae ratione accusantium, nobis fuga.`,
