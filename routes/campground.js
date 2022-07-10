@@ -1,17 +1,18 @@
 const express = require('express');
 const router = express.Router();
-//Creating a wrapper function to handle our ASYNC routes ERRORHandling
-//This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
-const catchAsync = require('../utils/catchAsync')
 
-// Getting the model that we create from the origional Schema 
-const Campground = require("../models/campground")
+const { index,
+    getNewCampground,
+    postNewCampground,
+    showCampground,
+    editCampground,
+    updateCampground,
+    deleteCampground } = require('../controllers/campgrounds')
 
 
-
-const stateList = require("../seeds/stateList")
-
-const { isLoggedIn, validateCampground, isAuthor } = require('../middleware')
+const { isLoggedIn,
+    validateCampground,
+    isAuthor } = require('../middleware')
 
 
 
@@ -20,11 +21,7 @@ const { isLoggedIn, validateCampground, isAuthor } = require('../middleware')
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display a list of all products
 ////////MONGOOSE METHOD: => Product.find()
-router.get('/', catchAsync(async (req, res) => {
-    const camps = await Campground.find({});
-    res.render('campgrounds/index', { camps })
-
-}))
+router.get('/', index)
 
 
 ////////CRUD: => New    
@@ -32,9 +29,7 @@ router.get('/', catchAsync(async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Display form to add a new product
 ////////MONGOOSE METHOD: => N/A   
-router.get('/new', isLoggedIn, (req, res) => {
-    res.render("campgrounds/new", { stateList })
-})
+router.get('/new', isLoggedIn, getNewCampground)
 
 
 ////////CRUD: => Create     
@@ -42,17 +37,7 @@ router.get('/new', isLoggedIn, (req, res) => {
 ////////HTTP VERB: => POST
 // ////PURPOSE: => Add a new product to the database, redirect somewhere
 ////////MONGOOSE METHOD: => Product.create() or Product.save()
-router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
-    // console.log(_.isEmpty(req.body.title))
-    // if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
-    const { title, price, city, state, description, image } = req.body;
-    const location = `${city}, ${state}`;
-    const newCamp = new Campground({ title, price, location, description, image });
-    newCamp.author = req.user._id;
-    await newCamp.save();
-    req.flash('success', 'Successfully made a new campground');
-    res.redirect(`/campgrounds/${newCamp._id}`);
-}))
+router.post('/', isLoggedIn, validateCampground, postNewCampground)
 
 
 ////////CRUD: => SHOW     
@@ -60,20 +45,7 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show information about one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const camp = await Campground.findById(id).populate({
-        path: 'reviews',
-        populate: {
-            path: 'author'
-        }
-    }).populate('author');
-
-
-    // console.log(camp)
-
-    res.render('campgrounds/show', { camp })
-}))
+router.get('/:id', showCampground)
 
 
 ////////CRUD: => EDIT   
@@ -81,15 +53,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const camp = await Campground.findById(id);
-    if (!camp) {
-        req.flash('error', "Campground doesn't exits");
-        return res.redirect("/campgrounds")
-    }
-    res.render('campgrounds/edit', { camp, stateList })
-}));
+router.get('/:id/edit', isLoggedIn, isAuthor, editCampground);
 
 
 ////////CRUD: => UPDATE  
@@ -97,22 +61,7 @@ router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
 ////////HTTP VERB: => PUT
 // ////PURPOSE: => Update a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndUpdate()
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const { title, price, city, state, description } = req.body;
-    // console.log("Checking before updating")
-    // const camp1 = await Campground.findById(id);
-    // console.log(camp1)
-    const camp = await Campground.findByIdAndUpdate(id, {
-        title: title,
-        price: price,
-        description: description,
-        location: `${city}, ${state}`
-    }, { new: true })
-    req.flash('success', 'Successfully updated campground');
-    res.redirect(`/campgrounds/${camp._id}`);
-
-}));
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, updateCampground);
 
 
 ////////CRUD: => DELETE
@@ -120,12 +69,6 @@ router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(async (r
 ////////HTTP VERB: => DELTE
 // ////PURPOSE: => Delete a particular product's data then redirect somewhere
 ////////MONGOOSE METHOD: =>  Product.findByIdAndDelete()
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    const { id } = req.params;
-
-    await Campground.findByIdAndDelete(id);
-    req.flash('success', 'Successfully deleted a campground');
-    res.redirect('/campgrounds');
-}))
+router.delete('/:id', isLoggedIn, isAuthor, deleteCampground)
 
 module.exports = router;
