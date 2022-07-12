@@ -1,20 +1,22 @@
 const express = require('express');
 const router = express.Router();
-
 const campControllers = require('../controllers/campgrounds')
-
-
 const { isLoggedIn,
     validateCampground,
     isAuthor } = require('../middleware')
-
+const multer = require('multer');
+const { storage } = require('../cloudinary')
+const upload = multer({ storage })
 
 // Chaining Router Routes. This is use to chain together http vers that share similar path
 
 router.route('/')
     .get(campControllers.index) ////////CRUD: => INDEX
-    .post(isLoggedIn, validateCampground, campControllers.postNewCampground) ////////CRUD: => Create    
-
+    // .post(isLoggedIn, validateCampground, campControllers.postNewCampground) ////////CRUD: => Create    
+    .post(upload.array('image'), (req, res) => {
+        console.log(req.body, req.files)
+        res.send('It worked')
+    })
 ////////CRUD: => New    
 // ////API ENDPOINT: =>  /products/new
 ////////HTTP VERB: => GET
