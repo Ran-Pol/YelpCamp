@@ -25,10 +25,13 @@ module.exports.postNewCampground = catchAsync(async (req, res, next) => {
     // console.log(_.isEmpty(req.body.title))
     // if (_.isEmpty(req.body)) throw new ExpressError("Cannot Submit Empty Form", 400)
     const { title, price, city, state, description, image } = req.body;
+    const imgArray = req.files.map(img => ({ url: img.path, filename: img.filename }));
     const location = `${city}, ${state}`;
     const newCamp = new Campground({ title, price, location, description, image });
     newCamp.author = req.user._id;
+    newCamp.images = imgArray;
     await newCamp.save();
+    console.log(newCamp)
     req.flash('success', 'Successfully made a new campground');
     res.redirect(`/campgrounds/${newCamp._id}`);
 })

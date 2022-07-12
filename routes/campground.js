@@ -12,11 +12,11 @@ const upload = multer({ storage })
 
 router.route('/')
     .get(campControllers.index) ////////CRUD: => INDEX
-    // .post(isLoggedIn, validateCampground, campControllers.postNewCampground) ////////CRUD: => Create    
-    .post(upload.array('image'), (req, res) => {
-        console.log(req.body, req.files)
-        res.send('It worked')
-    })
+    .post(isLoggedIn, upload.array('image'), validateCampground, campControllers.postNewCampground) ////////CRUD: => Create    
+// .post(upload.array('image'), (req, res) => {
+//     console.log(req.body, req.files)
+//     res.send('It worked')
+// })
 ////////CRUD: => New    
 // ////API ENDPOINT: =>  /products/new
 ////////HTTP VERB: => GET
