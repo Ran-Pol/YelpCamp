@@ -66,15 +66,15 @@ module.exports.editCampground = catchAsync(async (req, res) => {
 module.exports.updateCampground = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { title, price, city, state, description } = req.body;
-    // console.log("Checking before updating")
-    // const camp1 = await Campground.findById(id);
-    // console.log(camp1)
     const camp = await Campground.findByIdAndUpdate(id, {
         title: title,
         price: price,
         description: description,
         location: `${city}, ${state}`
     }, { new: true })
+    const imgArray = req.files.map(img => ({ url: img.path, filename: img.filename }));
+    camp.images.push(...imgArray);
+    await camp.save();
     req.flash('success', 'Successfully updated campground');
     res.redirect(`/campgrounds/${camp._id}`);
 
@@ -82,6 +82,15 @@ module.exports.updateCampground = catchAsync(async (req, res) => {
 
 
 
+////////CRUD: => DELETE Images
+module.exports.deleteCampgroundImage = catchAsync(async (req, res) => {
+    // const { id } = req.params;
+    // await Campground.findByIdAndDelete(id);
+    // req.flash('success', 'Successfully deleted a campground');
+    // res.render('campgrounds/edit', { camp, stateList })
+    console.log(req.body)
+    res.send("Checking it out")
+})
 ////////CRUD: => DELETE
 module.exports.deleteCampground = catchAsync(async (req, res) => {
     const { id } = req.params;

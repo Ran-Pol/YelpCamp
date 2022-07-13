@@ -27,7 +27,7 @@ router.get('/new', isLoggedIn, campControllers.getNewCampground)
 
 router.route('/:id')
     .get(campControllers.showCampground) ////////CRUD: => SHOW   
-    .put(isLoggedIn, isAuthor, validateCampground, campControllers.updateCampground) ////////CRUD: => UPDATE
+    .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, campControllers.updateCampground) ////////CRUD: => UPDATE
     .delete(isLoggedIn, isAuthor, campControllers.deleteCampground) ////////CRUD: => DELETE
 
 
@@ -37,7 +37,9 @@ router.route('/:id')
 ////////HTTP VERB: => GET
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
-router.get('/:id/edit', isLoggedIn, isAuthor, campControllers.editCampground);
+router.get('/:id/edit', isLoggedIn, isAuthor, campControllers.editCampground)
+    .delete('/:id/edit/:alt', isLoggedIn, isAuthor, campControllers.deleteCampgroundImage);
+
 
 
 module.exports = router;
