@@ -22,9 +22,9 @@ async function runFunction(fileName) {
     spanCount.textContent = data.count;
     if (data.count === 0) {
         divImgs.innerHTML = `<div class="carousel-item active image-area">
-        <img src="/public/images/polished-diamond.png"
-            class="d-block w-100" alt="Collection">
-    </div>`;
+            <img src="/images/loto.jpg" class="d-block w-100" alt="Collection">
+        </div>`;
+        document.querySelector('#paraButones').setAttribute('style', "display: none;");
     }
     updateArray(data.images, divImgs, id)
 
