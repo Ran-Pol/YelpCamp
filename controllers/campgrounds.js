@@ -89,9 +89,9 @@ module.exports.deleteCampgroundImage = catchAsync(async (req, res) => {
     const camp = await Campground.findById(id);
     camp.images.splice(index, 1);
     await camp.save()
-    console.log(camp.images)
+    // console.log(camp.images)
 
-    res.send({ images: camp.images, count: camp.images.length })
+    res.send(JSON.stringify({ images: camp.images, count: camp.images.length }))
 })
 
 ////////CRUD: => DELETE
