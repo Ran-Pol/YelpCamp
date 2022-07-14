@@ -26,17 +26,20 @@
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
 
                         <div class="carousel-inner card-img-top" id="updateImgArray">
+                            <% if(camp.images.length !==0){%>
+                                <% camp.images.forEach((img, index)=> {%>
+                                    <div class="carousel-item <%= index === 0 ? 'active': ''%> image-area">
+                                        <img src="<%= img.url %>" class="d-block w-100" alt="<%=img.filename%>">
+                                        <a class="remove-image " onclick="runFunction(`<%=camp._id %>,<%=index%>`)"
+                                            style="display: inline;">&#215;</a>
+                                    </div>
 
-                            <% camp.images.forEach((img, index)=> {%>
-                                <div class="carousel-item <%= index === 0 ? 'active': ''%> image-area">
-                                    <img src="<%= camp.images[index].url %>" class="d-block w-100"
-                                        alt="<%=camp.images[index].filename%>">
-                                    <a class="remove-image " onclick="runFunction(`<%=camp._id %>,<%=index%>`)"
-                                        style="display: inline;">&#215;</a>
-                                </div>
-
-                                <%})%>
-
+                                    <%})%>
+                                        <% } else{%>
+                                            <div class="carousel-item active image-area">
+                                                <img src="/images/loto.jpg" class="d-block w-100" alt="Collection">
+                                            </div>
+                                            <% } %>
                         </div>
                         <% if (camp.images.length> 1) {%>
                             <div class="paraButones">

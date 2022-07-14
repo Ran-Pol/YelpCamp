@@ -20,6 +20,12 @@ async function runFunction(fileName) {
     const divImgs = document.querySelector('#updateImgArray');
     divImgs.innerHTML = '';
     spanCount.textContent = data.count;
+    if (data.count === 0) {
+        divImgs.innerHTML = `<div class="carousel-item active image-area">
+        <img src="/public/images/polished-diamond.png"
+            class="d-block w-100" alt="Collection">
+    </div>`;
+    }
     updateArray(data.images, divImgs, id)
 
 }
