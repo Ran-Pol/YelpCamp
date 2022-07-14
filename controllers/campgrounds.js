@@ -8,6 +8,9 @@ const catchAsync = require('../utils/catchAsync')
 // List of states
 const stateList = require("../seeds/stateList")
 
+// Require Culinary
+const { cloudinary } = require('../cloudinary')
+
 ////////CRUD: => INDEX  
 module.exports.index = catchAsync(async (req, res) => {
     const camps = await Campground.find({});
@@ -87,7 +90,8 @@ module.exports.deleteCampgroundImage = catchAsync(async (req, res) => {
     // console.log('I reached the route using fetch')
     const { id, index } = req.body;
     const camp = await Campground.findById(id);
-    camp.images.splice(index, 1);
+    // console.log(camp.images[])
+    await cloudinary.uploader.destroy(camp.images.splice(index, 1)[0].filename)
     await camp.save()
     // console.log(camp.images)
 

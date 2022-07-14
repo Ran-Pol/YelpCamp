@@ -6,7 +6,7 @@ async function runFunction(fileName) {
         id: id,
         index: imgIndex
     };
-    console.log(fileName)
+
     let response = await fetch(`/campgrounds/${id}/edit`, {
         method: 'DELETE',
         headers: {
@@ -15,7 +15,7 @@ async function runFunction(fileName) {
         body: JSON.stringify(send)
     });
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     const spanCount = document.querySelector('#numberImages');
     const divImgs = document.querySelector('#updateImgArray');
     divImgs.innerHTML = '';
