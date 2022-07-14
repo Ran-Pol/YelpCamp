@@ -13,7 +13,10 @@ const flash = require('connect-flash')
 const ExpressError = require('./utils/ExpressError')
 const methodOverride = require('method-override')
 // req.body Parser
-bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
+// create application/json parser
+const jsonParser = bodyParser.json()
+
 // Lodash is a utiliti package that has some of the most common day to day 
 //javascripts methods/operations
 const _ = require('lodash');
@@ -59,7 +62,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 //Express.urlencoded allows us to read the body data/ parses the data
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-
+// Creating a middleware for json fetch 
+app.use(jsonParser);
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
 
@@ -103,6 +107,8 @@ app.use((req, res, next) => {
     res.locals.welcome = req.flash('welcome')
     next();
 })
+
+
 
 
 //Routes//

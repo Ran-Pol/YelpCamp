@@ -38,7 +38,11 @@ router.route('/:id')
 // ////PURPOSE: => Show edit form for one product
 ////////MONGOOSE METHOD: => Product.findById()
 router.get('/:id/edit', isLoggedIn, isAuthor, campControllers.editCampground)
-    .delete('/:id/edit/:alt', isLoggedIn, isAuthor, campControllers.deleteCampgroundImage);
+    .delete('/:id/edit', isLoggedIn, isAuthor, campControllers.deleteCampgroundImage);
+
+
+////////CRUD: => Deleting Image   
+// router.delete('/:id/edit/:alt', isLoggedIn, isAuthor, campControllers.deleteCampgroundImage);
 
 
 

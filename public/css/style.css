@@ -47,6 +47,7 @@ img {
 }
 
 .remove-image:hover {
+    cursor: pointer;
     background: #E54E4E;
     padding: 3px 7px 5px;
     top: 2px;

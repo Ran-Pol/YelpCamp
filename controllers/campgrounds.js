@@ -84,13 +84,16 @@ module.exports.updateCampground = catchAsync(async (req, res) => {
 
 ////////CRUD: => DELETE Images
 module.exports.deleteCampgroundImage = catchAsync(async (req, res) => {
-    // const { id } = req.params;
-    // await Campground.findByIdAndDelete(id);
-    // req.flash('success', 'Successfully deleted a campground');
-    // res.render('campgrounds/edit', { camp, stateList })
-    console.log(req.body)
-    res.send("Checking it out")
+    // console.log('I reached the route using fetch')
+    const { id, index } = req.body;
+    const camp = await Campground.findById(id);
+    camp.images.splice(index, 1);
+    await camp.save()
+    console.log(camp.images)
+
+    res.send({ images: camp.images, count: camp.images.length })
 })
+
 ////////CRUD: => DELETE
 module.exports.deleteCampground = catchAsync(async (req, res) => {
     const { id } = req.params;

@@ -1,5 +1,4 @@
 <% layout('layouts/boilerplate.ejs') %>
-
     <div class="row">
         <!-- Title of the page -->
         <h1 class="text-center" id="klkTittle">
@@ -20,32 +19,23 @@
                 </div>
                 <!-- Camp's Image -->
                 <div class="mb-3">
-                    <label for="carouselExampleIndicators" class="form-label">Number of Images: <%= camp.images.length%>
+                    <label for="carouselExampleIndicators" class="form-label">Number of Images: <span id="numberImages">
+                            <%= camp.images.length%>
+                        </span>
                     </label>
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
 
                         <div class="carousel-inner card-img-top">
 
-                            <% if (camp.images.length> 1) {%>
-                                <div class="carousel-item active image-area">
-                                    <img src="<%= camp.images[0].url %>" class="d-block w-100"
-                                        alt="<%=camp.images[0].filename%>">
-                                    <a class="remove-image deleteImageOnCLick" style="display: inline;">&#215;</a>
+                            <% camp.images.forEach((img, index)=> {%>
+                                <div class="carousel-item <%= index === 0 ? 'active': ''%> image-area">
+                                    <img src="<%= camp.images[index].url %>" class="d-block w-100"
+                                        alt="<%=camp.images[index].filename%>">
+                                    <a class="remove-image " onclick="runFunction(`<%=camp._id %>,<%=index%>`)"
+                                        style="display: inline;">&#215;</a>
                                 </div>
-                                <% for (let img of camp.images.slice(1)) {%>
-                                    <div class="carousel-item image-area">
-                                        <img src=" <%= img.url %>" alt="<%=img.filename%>" class="d-block w-100">
-                                        <a class="remove-image  deleteImageOnCLick" href="#"
-                                            style="display: inline;">&#215;</a>
-                                    </div>
-                                    <%} } else{%>
-                                        <div class="carousel-item active image-area">
-                                            <img src="<%= camp.images[0].url %>" class="d-block w-100"
-                                                alt="<%=camp.images[0].filename%>">
-                                            <a class="remove-image  deleteImageOnCLick" href="#"
-                                                style="display: inline;">&#215;</a>
-                                        </div>
-                                        <% } %>
+
+                                <%})%>
 
                         </div>
                         <% if (camp.images.length> 1) {%>
