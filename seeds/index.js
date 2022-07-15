@@ -32,6 +32,7 @@ const seedDB = async () => {
             price: (Math.floor(Math.random() * 50) + 20),
             description: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa eius asperiores, quis quod velit non perspiciatis officiis rerum natus veniam molestiae vel neque nisi, consequatur quae ratione accusantium, nobis fuga.`,
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            geometry: { coordinates: [cities[random1000].longitude, cities[random1000].latitude], type: 'Point' },
             images: [{
                 url: 'https://source.unsplash.com/collection/483251',
                 filename: 'La Para'
