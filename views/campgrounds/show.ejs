@@ -179,7 +179,7 @@
     <script>
         const mapToken = '<%-process.env.MAPBOX_TOKEN %>';
         // const mapCoordinates = [< %= camp.geometry.coordinates[0] %> ,< %= camp.geometry.coordinates[1]%> ];
-        const mapCoordinates = [<%= JSON.stringify(camp.geometry.coordinates[0]) %> ,<%= JSON.stringify(camp.geometry.coordinates[1]) %> ];
+        const camp = <%-JSON.stringify(camp) %>;
     </script>
     <!-- This is to get the logic for MapBox-->
     <script src="/js/map.js">  </script>
