@@ -1,5 +1,11 @@
 <% layout('layouts/boilerplate.ejs') %>
     <link rel="stylesheet" href="/css/startability.css">
+    <!-- MapBox -->
+    <div class="row mb-3">
+        <div id="map" style="width: 100%; height: 300px;"></div>
+    </div>
+
+    <!-- Campground -->
     <div class="row">
         <div class="col-6">
 
@@ -168,3 +174,12 @@
                             <%}%>
         </div>
     </div>
+
+    <!-- Create This Script to create variables for our external javascript -->
+    <script>
+        const mapToken = '<%-process.env.MAPBOX_TOKEN %>';
+        // const mapCoordinates = [< %= camp.geometry.coordinates[0] %> ,< %= camp.geometry.coordinates[1]%> ];
+        const mapCoordinates = [<%= JSON.stringify(camp.geometry.coordinates[0]) %> ,<%= JSON.stringify(camp.geometry.coordinates[1]) %> ];
+    </script>
+    <!-- This is to get the logic for MapBox-->
+    <script src="/js/map.js">  </script>
