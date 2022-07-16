@@ -6,7 +6,7 @@
     <!-- Campground -->
     <div class="row">
         <div class="col-6 offset-3">
-            <h1 class="">All CampGrounds Availables</h1>
+            <h1 class="text-center">All CampGrounds Availables</h1>
 
             <% camps.forEach((camp)=> {%>
 
@@ -23,13 +23,17 @@
                                             <h5 class="card-title">
                                                 <%= camp.title%>
                                             </h5>
-                                            <p class="card-text">$<%=camp.price%>
-                                            </p>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    <%=camp.location%>
-                                                </small>
-                                            </p>
+                                            <a <%=camp.properties.popUpMarkup%>>Profile</a>
+
+                                            
+
+                                                <p class="card-text">$<%=camp.price%>
+                                                </p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        <%=camp.location%>
+                                                    </small>
+                                                </p>
                                         </div>
                                         <a href=<%=`/campgrounds/${camp._id}` %> class="btn btn-primary">Details</a>
                                     </div>

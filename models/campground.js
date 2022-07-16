@@ -13,7 +13,7 @@ ImageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upoad', '/upload/w_200');
 })
 
-
+const opts = { toJSON: { virtuals: true } };
 const CampgroundsSchema = new Schema({
     title: String,
     price: Number,
@@ -42,9 +42,16 @@ const CampgroundsSchema = new Schema({
             ref: 'Review'
         }
     ]
-});
+}, opts);
 
+// This would be the result of the virtual
+// properties: {
+//     popUpMarkup: "<h4>This is the link to the camp's profile page</h4>";
+// }
 
+CampgroundsSchema.virtual('properties.popUpMarkup').get(function () {
+    return `<a href="/campgrounds/${this._id}" style="color: green;">${this.title}</a>`
+})
 
 // DELETE ALL ASSOCIATED REVIEWS AFTER A CAMPGROUND IS DELETED
 // Campground Delete 
