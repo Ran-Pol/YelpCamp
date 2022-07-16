@@ -1,32 +1,50 @@
 <% layout('layouts/boilerplate.ejs') %>
-    <h1 class="">All CampGrounds Availables</h1>
+    <!-- MapBox -->
+    <div class="row mb-3">
+        <div id="map" style="width: 100%; height: 300px;"></div>
+    </div>
+    <!-- Campground -->
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h1 class="">All CampGrounds Availables</h1>
 
-    <% camps.forEach((camp)=> {%>
+            <% camps.forEach((camp)=> {%>
 
-        <div class="card mb-4">
-            <% if (camp.images.length) { %>
-                <img class="card-img-top mh-50 img-fluid" alt="" src="<%=camp.images[0].url%>">
-                <% } else{%>
-                    <img class="card-img-top mh-50 img-fluid" alt="" src="/images/loto.jpg">
-                    <% } %>
+                <div class="card mb-4">
+                    <% if (camp.images.length) { %>
+                        <img class="card-img-top mh-50 img-fluid" alt="" src="<%=camp.images[0].url%>">
+                        <% } else{%>
+                            <img class="card-img-top mh-50 img-fluid" alt="" src="/images/loto.jpg">
+                            <% } %>
 
-                        <div class="card-body">
-                            <div class="indexBottomContainer">
-                                <div>
-                                    <h5 class="card-title">
-                                        <%= camp.title%>
-                                    </h5>
-                                    <p class="card-text">$<%=camp.price%>
-                                    </p>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            <%=camp.location%>
-                                        </small>
-                                    </p>
+                                <div class="card-body">
+                                    <div class="indexBottomContainer">
+                                        <div>
+                                            <h5 class="card-title">
+                                                <%= camp.title%>
+                                            </h5>
+                                            <p class="card-text">$<%=camp.price%>
+                                            </p>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    <%=camp.location%>
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <a href=<%=`/campgrounds/${camp._id}` %> class="btn btn-primary">Details</a>
+                                    </div>
                                 </div>
-                                <a href=<%=`/campgrounds/${camp._id}` %> class="btn btn-primary">Details</a>
-                            </div>
-                        </div>
+                </div>
+
+                <% })%>
+                    </divv>
         </div>
 
-        <% })%>
+        <!-- Create This Script to create variables for our external javascript -->
+        <script>
+            const mapToken = '<%-process.env.MAPBOX_TOKEN %>';
+
+            const camps = <%- JSON.stringify(camps) %>;
+        </script>
+        <!-- This is to get the logic for MapBox-->
+        <script src="/js/allCamps.js">  </script>
