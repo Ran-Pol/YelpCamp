@@ -22,11 +22,13 @@ const jsonParser = bodyParser.json()
 //javascripts methods/operations
 const _ = require('lodash');
 
+const MongoDBStore = require('connect-mongo');
+
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user')
 
-const helmet = require('helmet');
+
 
 // Requiring the campground routes that we seperated to a different file to clean the main app file
 const campgroundsRoutes = require("./routes/campground");
@@ -34,7 +36,11 @@ const reviewsRoutes = require("./routes/review");
 const usersRoutes = require("./routes/users");
 
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+// This is the local connection to the MongoDB on my Computer
+const localDatabase = 'mongodb://localhost:27017/yelp-camp'
+// This is the MongoDB Atlas
+const dbUrl = process.env.DB_URL
+mongoose.connect(localDatabase, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // useFindAndModify: false
@@ -75,9 +81,18 @@ app.use(mongoSanitize({
 }))
 
 
+const store = new MongoDBStore({
+    mongoUrl: localDatabase,
+    crypto: 'thisadvdsds',
+    touchAfter: 24 * 60 * 60
+});
 
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e)
+})
 // This are the setting arguments to the session
 const sessionConfig = {
+    store,
     name: "homeRunRun",
     secret: 'thisshouldbeabetterscret',
     resave: false,
@@ -92,12 +107,6 @@ const sessionConfig = {
 app.use(session(sessionConfig))
 
 app.use(flash());
-
-// app.use(
-//     helmet({
-//         contentSecurityPolicy: false,
-//     })
-// );
 
 // ==================== Setup Passport =============
 app.use(passport.initialize())
