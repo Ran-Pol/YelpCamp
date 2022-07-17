@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const ejsMate = require('ejs-mate')
 const session = require('express-session')
 const flash = require('connect-flash')
+const mongoSanitize = require('express-mongo-sanitize')
 //Creating a wrapper function to handle our ASYNC routes ERRORHandling
 //This allow us to forgo the use of try&catch methods while dealing with ASYNC functions
 const ExpressError = require('./utils/ExpressError')
@@ -24,6 +25,8 @@ const _ = require('lodash');
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user')
+
+const helmet = require('helmet');
 
 // Requiring the campground routes that we seperated to a different file to clean the main app file
 const campgroundsRoutes = require("./routes/campground");
@@ -66,14 +69,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(jsonParser);
 // This method-override module allow us to modify HTTP request while working with FORMS
 app.use(methodOverride('_method'));
+// To help filter hacking string in the query like: $
+app.use(mongoSanitize({
+    replaceWith: '_'
+}))
+
+
 
 // This are the setting arguments to the session
 const sessionConfig = {
+    name: "homeRunRun",
     secret: 'thisshouldbeabetterscret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -81,6 +92,12 @@ const sessionConfig = {
 app.use(session(sessionConfig))
 
 app.use(flash());
+
+// app.use(
+//     helmet({
+//         contentSecurityPolicy: false,
+//     })
+// );
 
 // ==================== Setup Passport =============
 app.use(passport.initialize())
