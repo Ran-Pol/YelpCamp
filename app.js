@@ -40,7 +40,10 @@ const usersRoutes = require("./routes/users");
 const localDatabase = 'mongodb://localhost:27017/yelp-camp'
 // This is the MongoDB Atlas
 const dbUrl = process.env.DB_URL
-mongoose.connect(localDatabase, {
+//Creating an or variable for the DB
+const useThisDB = dbUrl || localDatabase;
+
+mongoose.connect(useThisDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // useFindAndModify: false
@@ -80,10 +83,10 @@ app.use(mongoSanitize({
     replaceWith: '_'
 }))
 
-
+const secret = process.env.SECRET || "thisadvdsds"
 const store = new MongoDBStore({
-    mongoUrl: localDatabase,
-    crypto: 'thisadvdsds',
+    mongoUrl: useThisDB,
+    crypto: secret,
     touchAfter: 24 * 60 * 60
 });
 
@@ -94,7 +97,7 @@ store.on("error", function (e) {
 const sessionConfig = {
     store,
     name: "homeRunRun",
-    secret: 'thisshouldbeabetterscret',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
